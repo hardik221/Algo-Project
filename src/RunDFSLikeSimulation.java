@@ -3,7 +3,6 @@ import java.util.List;
 public class RunDFSLikeSimulation {
     public Result runDFSLikeSimulation(Graph graph, Vertex source, Vertex sink, String type){
         List<Vertex> augmentingPath = DFSLikeSimulation.dfsLikeDijkstra(graph, source, sink);
-//        graph.getCapacities();
         System.out.println("Shortest Augmenting Path from " + source.id + " to " + sink.id + ":");
         for (Vertex vertex : augmentingPath) {
             System.out.print(vertex.id + " -> ");
@@ -25,7 +24,7 @@ public class RunDFSLikeSimulation {
 
             int minCapacity = f.findMinCapacity(augmentingPath);
             f.updateResidualGraph(augmentingPath, minCapacity);
-            //graph.getCapacities();
+
             maxFlow += minCapacity;
 
             augmentingPath = DFSLikeSimulation.dfsLikeDijkstra(graph, source, sink);

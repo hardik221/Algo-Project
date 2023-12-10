@@ -19,7 +19,8 @@ class Graph {
             for (Map.Entry<Vertex, Integer> neighborEntry : originalVertex.neighbors.entrySet()) {
                 Vertex originalNeighbor = neighborEntry.getKey();
                 int capacity = neighborEntry.getValue();
-                Vertex newNeighbor = new Vertex(originalNeighbor.id);
+                //Vertex newNeighbor = new Vertex(originalNeighbor.id);
+                Vertex newNeighbor = this.vertices.computeIfAbsent(originalNeighbor.id, Vertex::new);
                 newVertex.neighbors.put(newNeighbor, capacity);
             }
         }
@@ -117,7 +118,7 @@ public class Helper {
     }
 
     public static void main(String[] args) throws IOException {
-        String fileName = "graph_adjacency_list_100_0.2_50.csv";
+        String fileName = "graph_adjacency_list_100_0.5_50.csv";
         Graph graph = readGraphFromFile(fileName);
 
         // Select a random source and find the longest path to determine the sink
@@ -131,7 +132,6 @@ public class Helper {
         Graph g1 =  readGraphFromFile(fileName);
         Vertex sourceCopy1 = new Vertex(source);
         Vertex sinkCopy1 = new Vertex(sink);
-        g1.getCapacities();
         RunSAPSimulation rss = new RunSAPSimulation();
         Result resultSAP = rss.runSAPSimulation(g1, sourceCopy1, sinkCopy1, "SAP");
         results.add(resultSAP);

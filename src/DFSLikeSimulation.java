@@ -5,7 +5,7 @@ public class DFSLikeSimulation {
     // Dijkstra's algorithm treating edges with non-zero capacity
     static List<Vertex> dfsLikeDijkstra(Graph graph, Vertex source, Vertex sink) {
         System.out.println("Inside dijkstra dfs like");
-        graph.getCapacities();
+
         if (graph == null || source == null || sink == null) {
             throw new IllegalArgumentException("Input arguments cannot be null.");
         }
@@ -25,16 +25,18 @@ public class DFSLikeSimulation {
 
         while (!queue.isEmpty()) {
             Vertex currentVertex = queue.poll();
-            if (currentVertex.id == sink.id) {
+            if(currentVertex.id == sink.id) {
                 sink = currentVertex;
-                break;
             }
+            // Continue exploration even if we reach the sink
             for (Map.Entry<Vertex, Integer> entry : currentVertex.neighbors.entrySet()) {
                 Vertex neighbor = entry.getKey();
                 int capacity = entry.getValue();
 
+
+
                 // if v.d is infinity, decrease the key value for v from infinity to a decreasing
-                //counter value in Q. If v.d is not infinity, do not change v’s key value.
+                // counter value in Q. If v.d is not infinity, do not change v’s key value.
                 if (capacity > 0) {
                     Integer currentDistance = distances.get(neighbor);
 
@@ -42,6 +44,10 @@ public class DFSLikeSimulation {
                         distances.put(neighbor, decreasingCounter--);
                         predecessors.put(neighbor, currentVertex);
                         queue.add(neighbor);
+
+                        if(neighbor.id == sink.id) {
+                            sink = neighbor;
+                        }
                     }
                 }
             }
@@ -53,6 +59,7 @@ public class DFSLikeSimulation {
             return Collections.emptyList();
         }
 
+        // Explore the predecessors to construct the path
         List<Vertex> path = new ArrayList<>();
         for (Vertex currentVertex = sink; currentVertex != null; currentVertex = predecessors.get(currentVertex)) {
             path.add(currentVertex);

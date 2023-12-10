@@ -5,7 +5,7 @@ public class SAPSimulation {
     // Dijkstra's algorithm treating edges with non-zero capacity
     static List<Vertex> dijkstra(Graph graph, Vertex source, Vertex sink) {
         System.out.println("Inside dijkstra SAP");
-        graph.getCapacities();
+//        graph.getCapacities();
         if (graph == null || source == null || sink == null) {
             throw new IllegalArgumentException("Input arguments cannot be null.");
         }

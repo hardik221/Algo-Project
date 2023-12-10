@@ -4,7 +4,6 @@ public class MaxCapSimulation {
 
     static List<Vertex> maxCapDijkstra(Graph graph, Vertex source, Vertex sink) {
         System.out.println("Inside dijkstra max cap");
-        graph.getCapacities();
         if (graph == null || source == null || sink == null) {
             throw new IllegalArgumentException("Input arguments cannot be null.");
         }

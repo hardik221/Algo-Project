@@ -19,7 +19,9 @@ class Graph {
             for (Map.Entry<Vertex, Integer> neighborEntry : originalVertex.neighbors.entrySet()) {
                 Vertex originalNeighbor = neighborEntry.getKey();
                 int capacity = neighborEntry.getValue();
-                Vertex newNeighbor = new Vertex(originalNeighbor.id);
+//                Vertex newNeighbor = new Vertex(originalNeighbor.id);
+//                newVertex.neighbors.put(newNeighbor, capacity);
+                Vertex newNeighbor = this.vertices.computeIfAbsent(originalNeighbor.id, Vertex::new);
                 newVertex.neighbors.put(newNeighbor, capacity);
             }
         }

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Graph {
     Map<Integer, Vertex> vertices = new HashMap<>();
@@ -33,9 +34,18 @@ class Graph {
     }
 
     Vertex getRandomVertex() {
-        List<Vertex> vertexList = new ArrayList<>(vertices.values());
-        return vertexList.get(new Random().nextInt(vertexList.size()));
+        List<Vertex> eligibleVertices = vertices.values().stream()
+                .filter(vertex -> !vertex.neighbors.isEmpty()) // Filter vertices with at least one outgoing edge
+                .collect(Collectors.toList());
+
+        if (eligibleVertices.isEmpty()) {
+            // Handle the case where there are no vertices with outgoing edges
+            return null; // Or throw an exception, return a default vertex, etc.
+        }
+
+        return eligibleVertices.get(new Random().nextInt(eligibleVertices.size()));
     }
+
 
     void getCapacities() {
         for (Vertex u : vertices.values()) {

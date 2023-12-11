@@ -47,16 +47,16 @@ class Graph {
     }
 
 
-    void getCapacities() {
-        for (Vertex u : vertices.values()) {
-            for (Map.Entry<Vertex, Integer> entry : u.neighbors.entrySet()) {
-                Vertex v = entry.getKey();
-                int capacity = entry.getValue();
-
-                System.out.println("Edge: " + u.id + " -> " + v.id + ", Capacity: " + capacity);
-            }
-        }
-    }
+//    void getCapacities() {
+//        for (Vertex u : vertices.values()) {
+//            for (Map.Entry<Vertex, Integer> entry : u.neighbors.entrySet()) {
+//                Vertex v = entry.getKey();
+//                int capacity = entry.getValue();
+//
+//                System.out.println("Edge: " + u.id + " -> " + v.id + ", Capacity: " + capacity);
+//            }
+//        }
+//    }
 }
 
 class Vertex {
@@ -67,15 +67,15 @@ class Vertex {
         this.id = id;
     }
 
-    Vertex(Vertex original) {
-        this.id = original.id;
-        // Create a new map for neighbors and copy the entries
-        this.neighbors = new HashMap<>(original.neighbors.size());
-        for (Map.Entry<Vertex, Integer> entry : original.neighbors.entrySet()) {
-            Vertex neighborCopy = new Vertex(entry.getKey());
-            this.neighbors.put(neighborCopy, entry.getValue());
-        }
-    }
+//    Vertex(Vertex original) {
+//        this.id = original.id;
+//        // Create a new map for neighbors and copy the entries
+//        this.neighbors = new HashMap<>(original.neighbors.size());
+//        for (Map.Entry<Vertex, Integer> entry : original.neighbors.entrySet()) {
+//            Vertex neighborCopy = new Vertex(entry.getKey());
+//            this.neighbors.put(neighborCopy, entry.getValue());
+//        }
+//    }
 }
 
 public class Helper {
@@ -95,19 +95,20 @@ public class Helper {
                 }
             }
         }
-        return new Graph(graph);
+        return graph;
     }
 
     // Function to find the longest path in a graph using BFS
-    static Vertex findLongestPath(Graph graph, Vertex source) {
+    static Vertex findLongestPath(Vertex source) {
         Map<Vertex, Integer> distance = new HashMap<>();
         Queue<Vertex> queue = new LinkedList<>();
         queue.offer(source);
         distance.put(source, 0);
 
         Vertex farthestNode = source;
+        int count =0;
         int maxDistance = 0;
-        System.out.println(source.id);
+//        System.out.println(source.id);
         while (!queue.isEmpty()) {
             Vertex current = queue.poll();
             for (Vertex neighbor : current.neighbors.keySet()) {
@@ -118,69 +119,90 @@ public class Helper {
                     if (distance.get(neighbor) > maxDistance) {
                         maxDistance = distance.get(neighbor);
                         farthestNode = neighbor;
-                        System.out.println(farthestNode.id);
+
                     }
                 }
             }
         }
 
+        System.out.println("Longest path length: "+distance.get(farthestNode));
+
         return farthestNode;
     }
 
     public static void main(String[] args) throws IOException {
-        String fileName = "graph_adjacency_list_100_0.3_50.csv";
-        Graph graph = readGraphFromFile(fileName);
+        String fileName = "graph_adjacency_list_200_0.3_50.csv";
+        Graph originalGraph = readGraphFromFile(fileName);
 
         // Select a random source and find the longest path to determine the sink
-        Vertex source = graph.getRandomVertex();
-        Vertex sink = findLongestPath(graph, source);
+        Vertex source = originalGraph.getRandomVertex();
+        Vertex sink = findLongestPath(source);
 
-        System.out.println(source.id +", "+ sink.id);
         List<Result> results = new ArrayList<>();
+
+        // Create deep copies of the source and sink
+
 
         // 1. Shortest Augmenting Path (SAP)
         Graph g1 =  readGraphFromFile(fileName);
-        Vertex sourceCopy1 = new Vertex(source);
-        Vertex sinkCopy1 = new Vertex(sink);
+
+        Vertex sourceCopy1 = g1.vertices.get(source.id);
+        Vertex sinkCopy1 = g1.vertices.get(sink.id);
+
+//        Vertex sourceCopy1 = new Vertex(source);
+//        Vertex sinkCopy1 = new Vertex(sink);
+
         RunSAPSimulation rss = new RunSAPSimulation();
         Result resultSAP = rss.runSAPSimulation(g1, sourceCopy1, sinkCopy1, "SAP");
         results.add(resultSAP);
         System.out.println();
-        System.gc();
 
         // 2. DFS-Like
+
         Graph g2 =  readGraphFromFile(fileName);
-        Vertex sourceCopy2 = new Vertex(source);
-        Vertex sinkCopy2 = new Vertex(sink);
+
+        Vertex sourceCopy2 = g2.vertices.get(source.id);
+        Vertex sinkCopy2 = g2.vertices.get(sink.id);
+//        Graph g2 =  readGraphFromFile(fileName);
+//        Vertex sourceCopy2 = new Vertex(source);
+//        Vertex sinkCopy2 = new Vertex(sink);
         Result resultDFSLike = new RunDFSLikeSimulation().runDFSLikeSimulation(g2, sourceCopy2, sinkCopy2, "DFS-Like");
         results.add(resultDFSLike);
-        System.gc();
-
+        System.out.println();
 
         // 3. Maximum Capacity (MaxCap)
+//        Graph g3 =  readGraphFromFile(fileName);
+//        Vertex sourceCopy3 = new Vertex(source);
+//        Vertex sinkCopy3 = new Vertex(sink);
+
         Graph g3 =  readGraphFromFile(fileName);
-        Vertex sourceCopy3 = new Vertex(source);
-        Vertex sinkCopy3 = new Vertex(sink);
+
+        Vertex sourceCopy3 = g3.vertices.get(source.id);
+        Vertex sinkCopy3 = g3.vertices.get(sink.id);
         Result resultMaxCap = new RunMaxCapSimulation().runMaxCapSimulation(g3, sourceCopy3, sinkCopy3, "Max-Cap");
         results.add(resultMaxCap);
-        System.gc();
-
+        System.out.println();
 
         // 4. Random
+//        Graph g4 =  readGraphFromFile(fileName);
+//        Vertex sourceCopy4 = new Vertex(source);
+//        Vertex sinkCopy4 = new Vertex(sink);
+
         Graph g4 =  readGraphFromFile(fileName);
-        Vertex sourceCopy4 = new Vertex(source);
-        Vertex sinkCopy4 = new Vertex(sink);
+
+        Vertex sourceCopy4 = g4.vertices.get(source.id);
+        Vertex sinkCopy4 = g4.vertices.get(sink.id);
         Result resultRandom = new RunRandomSimulation().runRandomSimulation(g4, sourceCopy4, sinkCopy4, "Random");
         results.add(resultRandom);
+        System.out.println();
 
         // Display
         System.out.println();
-        System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
-                "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges"));
+        System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
+                "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges", "maxFlow"));
         for (Result result : results) {
-            String s = result.toFormattedString(100, 0.2, 2);
+            String s = result.toFormattedString(200, 0.3, 50);
             System.out.println(s);
         }
-
     }
 }

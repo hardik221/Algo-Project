@@ -5,6 +5,8 @@ public class RunRandomSimulation {
     RunRandomSimulation(){}
 
     public Result runRandomSimulation(Graph graph, Vertex source, Vertex sink, String type) {
+        int totalEdges = graph.vertices.values().stream().mapToInt(v -> v.neighbors.size()).sum();
+
         List<Vertex> augmentingPath = RandomSimulation.randomDijkstra(graph, source, sink);
 //        graph.getCapacities();
         System.out.println("Shortest Augmenting Path from " + source.id + " to " + sink.id + ":");
@@ -42,8 +44,7 @@ public class RunRandomSimulation {
 
         // Statistics
         double meanLength = (double) totalLength / paths;
-        double meanProportionalLength = (double) totalLength / maxLength;
-        int totalEdges = graph.vertices.values().stream().mapToInt(v -> v.neighbors.size()).sum();
+        double meanProportionalLength = meanLength / maxLength;
 
         System.out.println("Maximum Flow: " + maxFlow);
         System.out.println("Paths: " + paths);

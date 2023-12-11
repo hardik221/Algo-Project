@@ -4,7 +4,7 @@ public class RandomSimulation {
 
     // Dijkstra's algorithm treating edges with non-zero capacity
     static List<Vertex> randomDijkstra(Graph graph, Vertex source, Vertex sink) {
-        System.out.println("Inside dijkstra dfs like");
+        System.out.println("Inside random dijkstra dfs like");
 
         if (graph == null || source == null || sink == null) {
             throw new IllegalArgumentException("Input arguments cannot be null.");
@@ -32,8 +32,6 @@ public class RandomSimulation {
                 Vertex neighbor = entry.getKey();
                 int capacity = entry.getValue();
 
-                // if v.d is infinity, decrease the key value for v from infinity to a decreasing
-                // counter value in Q. If v.d is not infinity, do not change v’s key value.
                 if (capacity > 0) {
                     Integer currentDistance = distances.get(neighbor);
 

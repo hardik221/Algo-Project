@@ -2,6 +2,8 @@ import java.util.List;
 
 public class RunDFSLikeSimulation {
     public Result runDFSLikeSimulation(Graph graph, Vertex source, Vertex sink, String type){
+        int totalEdges = graph.vertices.values().stream().mapToInt(v -> v.neighbors.size()).sum();
+
         List<Vertex> augmentingPath = DFSLikeSimulation.dfsLikeDijkstra(graph, source, sink);
         System.out.println("Shortest Augmenting Path from " + source.id + " to " + sink.id + ":");
         for (Vertex vertex : augmentingPath) {
@@ -38,8 +40,7 @@ public class RunDFSLikeSimulation {
 
         // Statistics
         double meanLength = (double) totalLength / paths;
-        double meanProportionalLength = (double) totalLength / maxLength;
-        int totalEdges = graph.vertices.values().stream().mapToInt(v -> v.neighbors.size()).sum();
+        double meanProportionalLength =  meanLength / maxLength;
 
         System.out.println("DFS Like Results");
         System.out.println("Maximum Flow: " + maxFlow);

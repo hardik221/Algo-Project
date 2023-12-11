@@ -1,9 +1,9 @@
 import java.util.*;
 
-public class DFSLikeSimulation {
+public class RandomSimulation {
 
     // Dijkstra's algorithm treating edges with non-zero capacity
-    static List<Vertex> dfsLikeDijkstra(Graph graph, Vertex source, Vertex sink) {
+    static List<Vertex> randomDijkstra(Graph graph, Vertex source, Vertex sink) {
         System.out.println("Inside dijkstra dfs like");
 
         if (graph == null || source == null || sink == null) {
@@ -19,7 +19,6 @@ public class DFSLikeSimulation {
             predecessors.put(vertex, null);
         }
 
-        int decreasingCounter = 0;
         distances.put(source, 0);
         queue.add(source);
 
@@ -39,7 +38,7 @@ public class DFSLikeSimulation {
                     Integer currentDistance = distances.get(neighbor);
 
                     if (currentDistance == null || currentDistance == Integer.MAX_VALUE / 2) {
-                        distances.put(neighbor, decreasingCounter--);
+                        distances.put(neighbor, new Random().nextInt(Integer.MAX_VALUE / 2));
                         predecessors.put(neighbor, currentVertex);
                         queue.add(neighbor);
 

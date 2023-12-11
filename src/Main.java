@@ -3,7 +3,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
         int n = 100;
-        double r = 0.2;
+        double r = 0.3;
         int upperCap = 50;
         String outputFileName = "graph_adjacency_list_"+n+"_"+r+"_"+upperCap+".csv";
         GraphGenerator graphGenerator = new GraphGenerator();

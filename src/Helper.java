@@ -118,7 +118,7 @@ public class Helper {
     }
 
     public static void main(String[] args) throws IOException {
-        String fileName = "graph_adjacency_list_100_0.5_50.csv";
+        String fileName = "graph_adjacency_list_100_0.3_50.csv";
         Graph graph = readGraphFromFile(fileName);
 
         // Select a random source and find the longest path to determine the sink
@@ -136,6 +136,7 @@ public class Helper {
         Result resultSAP = rss.runSAPSimulation(g1, sourceCopy1, sinkCopy1, "SAP");
         results.add(resultSAP);
         System.out.println();
+        System.gc();
 
         // 2. DFS-Like
         Graph g2 =  readGraphFromFile(fileName);
@@ -143,6 +144,8 @@ public class Helper {
         Vertex sinkCopy2 = new Vertex(sink);
         Result resultDFSLike = new RunDFSLikeSimulation().runDFSLikeSimulation(g2, sourceCopy2, sinkCopy2, "DFS-Like");
         results.add(resultDFSLike);
+        System.gc();
+
 
         // 3. Maximum Capacity (MaxCap)
         Graph g3 =  readGraphFromFile(fileName);
@@ -150,17 +153,24 @@ public class Helper {
         Vertex sinkCopy3 = new Vertex(sink);
         Result resultMaxCap = new RunMaxCapSimulation().runMaxCapSimulation(g3, sourceCopy3, sinkCopy3, "Max-Cap");
         results.add(resultMaxCap);
+        System.gc();
+
 
         // 4. Random
-
+        Graph g4 =  readGraphFromFile(fileName);
+        Vertex sourceCopy4 = new Vertex(source);
+        Vertex sinkCopy4 = new Vertex(sink);
+        Result resultRandom = new RunRandomSimulation().runRandomSimulation(g4, sourceCopy4, sinkCopy4, "Random");
+        results.add(resultRandom);
 
         // Display
         System.out.println();
-        System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
-                "Algorithm", "maxFlow", "ML", "paths", "MPL", "totalEdges"));
-        for(Result result : results) {
-            String s = result.toFormattedString();
+        System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
+                "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges"));
+        for (Result result : results) {
+            String s = result.toFormattedString(100, 0.2, 2);
             System.out.println(s);
         }
+
     }
 }

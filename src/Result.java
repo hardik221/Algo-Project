@@ -18,9 +18,9 @@ public class Result {
         this.totalEdges = totalEdges;
     }
 
-    public String toFormattedString() {
-        return String.format("%-10s\t%-5d\t%-5.2f\t%-5d\t%-5.2f\t%-5d",
-                simulationName, maxFlow, meanLength, paths, meanProportionalLength, totalEdges);
+    public String toFormattedString(int n, double r, int upperCap) {
+        return String.format("%-10s\t%-5s\t%-5.2f\t%-10s\t%-7s\t%-5.2f\t%-5.2f\t%-5s",
+                simulationName, n, r, upperCap, paths, meanLength, meanProportionalLength, totalEdges);
     }
 
 

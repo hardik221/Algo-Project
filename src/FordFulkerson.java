@@ -1,39 +1,23 @@
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class FordFulkerson {
-     public int findMinCapacity(List<Vertex> path) {
-        int minCapacity = Integer.MAX_VALUE;
+    public int determineMinimumCapacity(List<VertexNode> path) {
+        return IntStream.range(0, path.size() - 1)
+            .map(i -> path.get(i).adjacentVertices.get(path.get(i + 1)))
+            .min()
+            .orElse(Integer.MAX_VALUE);
+}
 
+    public void updateResidualGraph(List<VertexNode> path, int minCapacity) {
         for (int i = 0; i < path.size() - 1; i++) {
-            Vertex u = path.get(i);
-            Vertex v = path.get(i + 1);
-
-            int capacity = u.neighbors.get(v);
-            minCapacity = Math.min(minCapacity, capacity);
-        }
-
-        return minCapacity;
-    }
-
-    public void updateResidualGraph(List<Vertex> path, int minCapacity) {
-        for (int i = 0; i < path.size() - 1; i++) {
-            Vertex u = path.get(i);
-            Vertex v = path.get(i + 1);
-
-            int originalCapacity = u.neighbors.get(v);
+            VertexNode u = path.get(i);
+            VertexNode v = path.get(i + 1);
+            int originalCapacity = u.adjacentVertices.getOrDefault(v, 0);
             int forwardFlow = Math.min(originalCapacity, minCapacity);
-
-            // Update forward edge
-            u.neighbors.put(v, Math.max(0, originalCapacity - forwardFlow));
-
-            // Check if backward edge already exists
-            if (v.neighbors.containsKey(u)) {
-                // Update backward edge (subtract forward flow)
-                v.neighbors.put(u, v.neighbors.get(u) - forwardFlow);
-            } else {
-                // Add backward edge (create if it doesn't exist)
-                v.neighbors.put(u, forwardFlow);
-            }
+            u.adjacentVertices.put(v, originalCapacity - forwardFlow);
+            v.adjacentVertices.merge(u, -forwardFlow, Integer::sum);
         }
     }
+
 }

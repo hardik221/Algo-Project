@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 100;
-        double r = 0.5;
-        int upperCap = 2;
+        int n = Integer.parseInt(args[0]);
+        double r = Double.parseDouble(args[1]);
+        int upperCap = Integer.parseInt(args[2]);
         String outputFileName = "graph_adjacency_list_"+n+"_"+r+"_"+upperCap+".csv";
         GraphGenerator graphGenerator = new GraphGenerator();
         graphGenerator.generateSinkSourceGraph(n, r, upperCap, outputFileName);

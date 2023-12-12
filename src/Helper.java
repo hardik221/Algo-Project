@@ -84,7 +84,10 @@ public class Helper {
     }
 
     public static void main(String[] args) throws IOException {
-        String fileName = "graph_adjacency_list_100_0.5_2.csv";
+        int n = Integer.parseInt(args[0]);
+        double r = Double.parseDouble(args[1]);
+        int upperCap = Integer.parseInt(args[2]);
+        String fileName = "graph_adjacency_list_"+args[0]+"_"+args[1]+"_"+args[2]+".csv";
         Graph originalGraph = readGraphFromFile(fileName);
 
         // Select a random source and find the longest path to determine the sink
@@ -131,15 +134,15 @@ public class Helper {
         System.out.println();
 
         // Display
-        display(results);
+        display(results, n, r, upperCap);
 
     }
 
-    static void display(List<Result> results) {
+    static void display(List<Result> results, int n, double r, int upperCap) {
         System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
                 "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges", "maxFlow"));
         for (Result result : results) {
-            String s = result.toFormattedString(100, 0.5, 2);
+            String s = result.toFormattedString(n, r, upperCap);
             System.out.println(s);
         }
     }

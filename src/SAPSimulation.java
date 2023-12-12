@@ -2,10 +2,8 @@ import java.util.*;
 
 public class SAPSimulation {
 
-    // Dijkstra's algorithm treating edges with non-zero capacity
     static List<Vertex> dijkstra(Graph graph, Vertex source, Vertex sink) {
         System.out.println("Inside dijkstra SAP");
-//        graph.getCapacities();
         if (graph == null || source == null || sink == null) {
             throw new IllegalArgumentException("Input arguments cannot be null.");
         }
@@ -15,7 +13,7 @@ public class SAPSimulation {
         PriorityQueue<Vertex> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get));
 
         for (Vertex vertex : graph.vertices.values()) {
-            distances.put(vertex, Integer.MAX_VALUE / 2); // Avoid integer overflow
+            distances.put(vertex, Integer.MAX_VALUE); // Avoid integer overflow
             predecessors.put(vertex, null);
         }
 
@@ -28,18 +26,16 @@ public class SAPSimulation {
                 sink = currentVertex;
                 break;
             }
+            int currentVertexDistance = distances.get(currentVertex);
             for (Map.Entry<Vertex, Integer> entry : currentVertex.neighbors.entrySet()) {
                 Vertex neighbor = entry.getKey();
                 int capacity = entry.getValue();
 
-                // Consider only edges with non-zero capacity
                 if (capacity > 0) {
-                    // For unit distances, set altDistance to 1
-                    int altDistance = 1;
+                    int currentDistanceOfNeighbour = distances.get(neighbor);
 
-                    Integer currentDistance = distances.get(neighbor);
-                    if (currentDistance == null || altDistance < currentDistance) {
-                        distances.put(neighbor, altDistance);
+                    if ( currentVertexDistance +1 < currentDistanceOfNeighbour) {
+                        distances.put(neighbor, currentVertexDistance +1);
                         predecessors.put(neighbor, currentVertex);
                         queue.add(neighbor);
                     }
@@ -48,8 +44,7 @@ public class SAPSimulation {
         }
 
         Integer sinkDistance = distances.get(sink);
-        if (sinkDistance == null || sinkDistance == Integer.MAX_VALUE / 2) {
-            // The sink is not reachable from the source
+        if (sinkDistance == null || sinkDistance == Integer.MAX_VALUE) {
             return Collections.emptyList();
         }
 

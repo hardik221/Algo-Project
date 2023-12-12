@@ -8,7 +8,6 @@ public class RunRandomSimulation {
         int totalEdges = graph.vertices.values().stream().mapToInt(v -> v.neighbors.size()).sum();
 
         List<Vertex> augmentingPath = RandomSimulation.randomDijkstra(graph, source, sink);
-//        graph.getCapacities();
         System.out.println("Shortest Augmenting Path from " + source.id + " to " + sink.id + ":");
         for (Vertex vertex : augmentingPath) {
             System.out.print(vertex.id + " -> ");
@@ -30,7 +29,6 @@ public class RunRandomSimulation {
 
             int minCapacity = f.findMinCapacity(augmentingPath);
             f.updateResidualGraph(augmentingPath, minCapacity);
-            //graph.getCapacities();
             maxFlow += minCapacity;
 
             augmentingPath = RandomSimulation.randomDijkstra(graph, source, sink);
@@ -53,7 +51,6 @@ public class RunRandomSimulation {
         System.out.println("Total Edges: " + totalEdges);
 
         return new Result(type, maxFlow, paths, meanLength, meanProportionalLength, totalEdges);
-
     }
 }
 

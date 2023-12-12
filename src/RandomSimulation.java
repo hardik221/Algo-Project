@@ -50,11 +50,9 @@ public class RandomSimulation {
 
         Integer sinkDistance = distances.get(sink);
         if (sinkDistance == null || sinkDistance == Integer.MAX_VALUE / 2) {
-            // The sink is not reachable from the source
             return Collections.emptyList();
         }
 
-        // Explore the predecessors to construct the path
         List<Vertex> path = new ArrayList<>();
         for (Vertex currentVertex = sink; currentVertex != null; currentVertex = predecessors.get(currentVertex)) {
             path.add(currentVertex);

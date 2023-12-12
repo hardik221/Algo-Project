@@ -6,26 +6,6 @@ import java.util.stream.Collectors;
 
 class Graph {
     Map<Integer, Vertex> vertices = new HashMap<>();
-    Graph(){};
-    // Deep copy constructor
-    Graph(Graph other) {
-        // Create a new instance of each vertex
-        for (Map.Entry<Integer, Vertex> entry : other.vertices.entrySet()) {
-            int id = entry.getKey();
-            Vertex originalVertex = entry.getValue();
-            Vertex newVertex = new Vertex(id);
-            this.vertices.put(id, newVertex);
-
-            // Copy neighbors
-            for (Map.Entry<Vertex, Integer> neighborEntry : originalVertex.neighbors.entrySet()) {
-                Vertex originalNeighbor = neighborEntry.getKey();
-                int capacity = neighborEntry.getValue();
-                //Vertex newNeighbor = new Vertex(originalNeighbor.id);
-                Vertex newNeighbor = this.vertices.computeIfAbsent(originalNeighbor.id, Vertex::new);
-                newVertex.neighbors.put(newNeighbor, capacity);
-            }
-        }
-    }
 
     void addEdge(int uId, int vId, int capacity) {
         Vertex u = vertices.computeIfAbsent(uId, Vertex::new);
@@ -45,18 +25,6 @@ class Graph {
 
         return eligibleVertices.get(new Random().nextInt(eligibleVertices.size()));
     }
-
-
-//    void getCapacities() {
-//        for (Vertex u : vertices.values()) {
-//            for (Map.Entry<Vertex, Integer> entry : u.neighbors.entrySet()) {
-//                Vertex v = entry.getKey();
-//                int capacity = entry.getValue();
-//
-//                System.out.println("Edge: " + u.id + " -> " + v.id + ", Capacity: " + capacity);
-//            }
-//        }
-//    }
 }
 
 class Vertex {
@@ -66,16 +34,6 @@ class Vertex {
     Vertex(int id) {
         this.id = id;
     }
-
-//    Vertex(Vertex original) {
-//        this.id = original.id;
-//        // Create a new map for neighbors and copy the entries
-//        this.neighbors = new HashMap<>(original.neighbors.size());
-//        for (Map.Entry<Vertex, Integer> entry : original.neighbors.entrySet()) {
-//            Vertex neighborCopy = new Vertex(entry.getKey());
-//            this.neighbors.put(neighborCopy, entry.getValue());
-//        }
-//    }
 }
 
 public class Helper {
@@ -98,7 +56,6 @@ public class Helper {
         return graph;
     }
 
-    // Function to find the longest path in a graph using BFS
     static Vertex findLongestPath(Vertex source) {
         Map<Vertex, Integer> distance = new HashMap<>();
         Queue<Vertex> queue = new LinkedList<>();
@@ -106,9 +63,7 @@ public class Helper {
         distance.put(source, 0);
 
         Vertex farthestNode = source;
-        int count =0;
         int maxDistance = 0;
-//        System.out.println(source.id);
         while (!queue.isEmpty()) {
             Vertex current = queue.poll();
             for (Vertex neighbor : current.neighbors.keySet()) {
@@ -125,13 +80,11 @@ public class Helper {
             }
         }
 
-        System.out.println("Longest path length: "+distance.get(farthestNode));
-
         return farthestNode;
     }
 
     public static void main(String[] args) throws IOException {
-        String fileName = "graph_adjacency_list_200_0.3_50.csv";
+        String fileName = "graph_adjacency_list_100_0.5_2.csv";
         Graph originalGraph = readGraphFromFile(fileName);
 
         // Select a random source and find the longest path to determine the sink
@@ -140,18 +93,11 @@ public class Helper {
 
         List<Result> results = new ArrayList<>();
 
-        // Create deep copies of the source and sink
-
-
         // 1. Shortest Augmenting Path (SAP)
         Graph g1 =  readGraphFromFile(fileName);
 
         Vertex sourceCopy1 = g1.vertices.get(source.id);
         Vertex sinkCopy1 = g1.vertices.get(sink.id);
-
-//        Vertex sourceCopy1 = new Vertex(source);
-//        Vertex sinkCopy1 = new Vertex(sink);
-
         RunSAPSimulation rss = new RunSAPSimulation();
         Result resultSAP = rss.runSAPSimulation(g1, sourceCopy1, sinkCopy1, "SAP");
         results.add(resultSAP);
@@ -160,23 +106,15 @@ public class Helper {
         // 2. DFS-Like
 
         Graph g2 =  readGraphFromFile(fileName);
-
         Vertex sourceCopy2 = g2.vertices.get(source.id);
         Vertex sinkCopy2 = g2.vertices.get(sink.id);
-//        Graph g2 =  readGraphFromFile(fileName);
-//        Vertex sourceCopy2 = new Vertex(source);
-//        Vertex sinkCopy2 = new Vertex(sink);
         Result resultDFSLike = new RunDFSLikeSimulation().runDFSLikeSimulation(g2, sourceCopy2, sinkCopy2, "DFS-Like");
         results.add(resultDFSLike);
         System.out.println();
 
         // 3. Maximum Capacity (MaxCap)
-//        Graph g3 =  readGraphFromFile(fileName);
-//        Vertex sourceCopy3 = new Vertex(source);
-//        Vertex sinkCopy3 = new Vertex(sink);
 
         Graph g3 =  readGraphFromFile(fileName);
-
         Vertex sourceCopy3 = g3.vertices.get(source.id);
         Vertex sinkCopy3 = g3.vertices.get(sink.id);
         Result resultMaxCap = new RunMaxCapSimulation().runMaxCapSimulation(g3, sourceCopy3, sinkCopy3, "Max-Cap");
@@ -184,12 +122,8 @@ public class Helper {
         System.out.println();
 
         // 4. Random
-//        Graph g4 =  readGraphFromFile(fileName);
-//        Vertex sourceCopy4 = new Vertex(source);
-//        Vertex sinkCopy4 = new Vertex(sink);
 
         Graph g4 =  readGraphFromFile(fileName);
-
         Vertex sourceCopy4 = g4.vertices.get(source.id);
         Vertex sinkCopy4 = g4.vertices.get(sink.id);
         Result resultRandom = new RunRandomSimulation().runRandomSimulation(g4, sourceCopy4, sinkCopy4, "Random");
@@ -197,11 +131,15 @@ public class Helper {
         System.out.println();
 
         // Display
-        System.out.println();
+        display(results);
+
+    }
+
+    static void display(List<Result> results) {
         System.out.println(String.format("%-10s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
                 "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges", "maxFlow"));
         for (Result result : results) {
-            String s = result.toFormattedString(200, 0.3, 50);
+            String s = result.toFormattedString(100, 0.5, 2);
             System.out.println(s);
         }
     }

@@ -17,7 +17,7 @@ public class MaxCapSimulation {
             predecessors.put(vertex, null);
         }
 
-        int maxCapacity = Integer.MIN_VALUE;
+        int maxCapacity;
         maxCapacities.put(source, Integer.MAX_VALUE);
         queue.add(source);
 
@@ -47,11 +47,9 @@ public class MaxCapSimulation {
 
         Integer sinkCap = maxCapacities.get(sink);
         if (sinkCap == null || sinkCap == Integer.MIN_VALUE) {
-            // The sink is not reachable from the source
             return Collections.emptyList();
         }
 
-        // Store the maximum capacity of the critical edge
         maxCapacity = maxCapacities.get(sink);
 
         List<Vertex> path = new ArrayList<>();
@@ -60,7 +58,6 @@ public class MaxCapSimulation {
         }
         Collections.reverse(path);
 
-        // Print or use maxCapacity as needed
         System.out.println("Maximum Capacity: " + maxCapacity);
 
         return path;

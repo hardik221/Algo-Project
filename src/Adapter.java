@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -56,19 +59,62 @@ public class Adapter {
      * Reads graph data from a file and creates a NodeGraph based on the information.
      */
 
-    public static NodeGraph fileData(String fileName) throws IOException {
-        NodeGraph NG = new NodeGraph();
-        Files.lines(Paths.get(fileName))
-                .forEach(line -> {
-                    String[] parts = line.split(",");
-                    int ureferenceId = Integer.parseInt(parts[0]);
+//    public static NodeGraph fileData(String fileName) throws IOException {
+//        NodeGraph NG = new NodeGraph();
+//        Files.lines(Paths.get(fileName))
+//                .forEach(line -> {
+//                    String[] parts = line.split(",");
+//                    int ureferenceId = Integer.parseInt(parts[0]);
+//
+//                    Arrays.stream(parts, 1, parts.length)
+//                            .map(edge -> edge.split(":"))
+//                            .forEach(edgeParts -> NG.createEdge(ureferenceId, Integer.parseInt(edgeParts[0]), Integer.parseInt(edgeParts[1])));
+//                });
+//        return NG;
+//    }
+//    public static NodeGraph fileData(String fileName) throws IOException {
+//        NodeGraph NG = new NodeGraph();
+//
+//        List<String> lines = Files.readAllLines(Paths.get(fileName));
+//        for (String line : lines) {
+//            String[] parts = line.split(",");
+//            int ureferenceId = Integer.parseInt(parts[0]);
+//
+//            for (int i = 1; i < parts.length; i++) {
+//                String[] edgeParts = parts[i].split(":");
+//                int vreferenceId = Integer.parseInt(edgeParts[0]);
+//                int capacity = Integer.parseInt(edgeParts[1]);
+//
+//                NG.createEdge(ureferenceId, vreferenceId, capacity);
+//            }
+//        }
+//
+//        return NG;
+//    }
 
-                    Arrays.stream(parts, 1, parts.length)
-                            .map(edge -> edge.split(":"))
-                            .forEach(edgeParts -> NG.createEdge(ureferenceId, Integer.parseInt(edgeParts[0]), Integer.parseInt(edgeParts[1])));
-                });
-        return NG;
+    public static NodeGraph fileData(String fileName) throws IOException {
+        NodeGraph graph = new NodeGraph();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+
+                int uId = Integer.parseInt(parts[0]);
+
+                for (int i = 1; i < parts.length; i++) {
+                    String[] edge = parts[i].split(":");
+                    int vId = Integer.parseInt(edge[0]);
+                    int capacity = Integer.parseInt(edge[1]);
+                    graph.createEdge(uId, vId, capacity);
+                }
+            }
+        }
+
+        return graph;
     }
+
 
     /**
      * Finds the farthest vertex from the given source vertex using BFS.
@@ -99,8 +145,12 @@ public class Adapter {
 
     public static void main(String[] args) throws IOException {
 
+        int n = Integer.parseInt(args[0]);
+        double r = Double.parseDouble(args[1]);
+        int upperCap = Integer.parseInt(args[2]);
+
         List<SimulationOutcome> simulationOutcomes = new ArrayList<>();
-        String fileName = "graph_adjacency_list_200_0.3_50.csv";
+        String fileName = "graph_adjacency_list_"+args[0]+"_"+args[1]+"_"+args[2]+".csv";
         NodeGraph mainNode = fileData(fileName);
         VertexNode source = mainNode.chooseRandomVertex();
         VertexNode sink = getLongestPath(source);
@@ -134,7 +184,7 @@ public class Adapter {
         System.out.println(String.format("%-11s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s\t%-5s",
                 "Algorithm", "n", "r", "upperCap", "paths", "ML", "MPL", "totalEdges", "maxFlow"));
         for (SimulationOutcome simulationOutcome : simulationOutcomes) {
-            String s = simulationOutcome.formatOutput(200, 0.3, 50);
+            String s = simulationOutcome.formatOutput(n, r, upperCap);
             System.out.println(s);
         }
     }

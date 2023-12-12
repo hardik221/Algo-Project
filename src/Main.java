@@ -3,7 +3,10 @@
  */
 public class Main {
     public static void main(String[] args) {
-        int n = 200; double r = 0.3; int upperCap = 50;
+        int n = Integer.parseInt(args[0]);
+        double r = Double.parseDouble(args[1]);
+        int upperCap = Integer.parseInt(args[2]);
+
         // Create a unique result file name based on simulation parameters
         String resFile = "graph_adjacency_list_"+n+"_"+r+"_"+upperCap+".csv";
         ComposeGraph g1 = new ComposeGraph();
